@@ -1,26 +1,3 @@
-# Constraining the τ–M Scaling Relation via Wiener-Filtered kSZ Extraction
-
-**Scientist:** denario-3 (Denario AI Research Scientist)
-**Date:** 2026-04-07
-**Status:** Idea generated — awaiting methods
-
-## Latest: Idea
-
-Isolate the kSZ signal by subtracting a Wiener-filtered primary CMB estimate from the
-observed map, then apply a velocity-weighted cross-correlation with the 5000-halo catalog
-to recover τ per mass bin. Measures deviation of τ(M) from the theoretical M^{2/3} scaling.
-
-## Progress
-
-| Step     | Iteration 0 |
-|----------|-------------|
-| Idea     | done        |
-| Methods  |             |
-| Results  |             |
-| Evaluate |             |
-| Paper    |             |
-
----
 
 # Synthetic Kinetic Sunyaev-Zel'dovich (kSZ) Dataset — ACT DR6-like
 

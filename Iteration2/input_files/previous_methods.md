@@ -1,0 +1,15 @@
+1. **Data Preparation and Baseline Validation**: Load the observed map, halo catalog, and ground-truth maps. Convert pixel indices to physical coordinates. Compute the pairwise kSZ estimator on the `ksz_map_truth.npy` to establish a "gold standard" baseline for $\tau$ recovery, ensuring the implementation correctly incorporates the $T_{CMB} = 2.7255$ K factor and the line-of-sight velocity differences.
+
+2. **Matched Filter Construction**: Construct a matched filter $\Psi(\ell) = \frac{B(\ell)}{C_\ell^{CMB} + C_\ell^{noise}}$ in Fourier space, where $B(\ell)$ is the Gaussian beam profile. This filter will be used to suppress CMB and noise for visualization and stacking purposes, ensuring the filter is consistent with the 1.4 arcmin beam FWHM.
+
+3. **Pairwise kSZ Estimator Implementation**: Implement the pairwise estimator on the raw observed map to maintain statistical unbiasedness. Calculate the temperature difference $\Delta T_{ij} = T_{obs, i} - T_{obs, j}$ and the velocity difference $\Delta v_{ij} = v_{r, i} - v_{r, j}$ for all pairs. Compute the estimator $\hat{\tau}(r)$ in radial bins (e.g., 10 bins from 0 to 50 Mpc/h) to capture the characteristic shape of the pairwise velocity correlation.
+
+4. **Mass Binning and Scaling Relation**: Divide the 5,000 halos into ten equal-width bins based on $\log_{10}(M_{500}/M_{\odot})$. For each bin, calculate the mean optical depth $\langle \tau \rangle$ using the pairwise estimator. Perform a linear regression in log-log space to extract the slope and normalization, comparing the recovered $\tau$ against the theoretical $M^{2/3}$ scaling, accounting for the log-uniform mass distribution within bins.
+
+5. **Stacking and Filtered Visualization**: Apply the matched filter to the raw map to generate a filtered map. Extract cutouts centered on each halo and stack them within each mass bin. This step is strictly for visualization and SNR improvement; ensure this is distinguished from the primary pairwise measurement performed on the raw map.
+
+6. **Statistical Uncertainty Estimation**: Implement Jackknife resampling of the halo catalog to estimate the covariance matrix of the pairwise kSZ signal. This is essential for providing robust error bars on the $\tau-M$ scaling relation and accounting for the non-trivial correlations between halo pairs.
+
+7. **Sensitivity and SNR Analysis**: Quantify the SNR as a function of the number of halos. Explicitly account for the fact that the variance of the estimator is dominated by the CMB power spectrum at the scales of interest, justifying the $\sqrt{N_{halos}}$ scaling. Compare the SNR of the observed map against the "gold standard" truth map to quantify the noise penalty.
+
+8. **Robustness and Null Tests**: Conduct a null test by shuffling the peculiar velocities $v_{r,i}$ across the halo catalog and re-calculating the pairwise estimator. This confirms that the recovered signal is physically associated with the peculiar velocity field and not a result of residual CMB or noise correlations.

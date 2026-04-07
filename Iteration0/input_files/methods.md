@@ -1,0 +1,15 @@
+1. **Data Preparation and Validation**: Load the observed map, ground-truth CMB map, kSZ truth map, and halo catalog. Verify that the provided `ix_pixel` and `iy_pixel` indices correctly map to the temperature arrays. Calculate the beam function $B(\ell)$ corresponding to the 1.4 arcmin FWHM Gaussian beam.
+
+2. **Wiener Filter Construction and Transfer Function**: Construct the Wiener filter $W(\ell) = \frac{C_\ell^{CMB} B(\ell)}{C_\ell^{CMB} B(\ell)^2 + C_\ell^{noise}}$, where $C_\ell^{noise}$ is the power spectrum of the white noise. Apply this filter to the observed map to produce the cleaned map. Separately, apply the same filter to the `ksz_map_truth.npy` to calculate a "transfer function" (signal attenuation factor) to quantify and correct for the signal loss inherent in the Wiener filtering process.
+
+3. **Signal Extraction and Aperture Photometry**: Extract temperature values at halo locations from the residual map (observed map minus Wiener-filtered CMB). To account for the beam-convolved nature of the kSZ signal, perform aperture photometry by summing pixels within a small radius (e.g., 1.5x the beam FWHM) around each halo to capture the total flux, rather than relying on a single pixel.
+
+4. **Mass Binning and Stacking**: Divide the 5,000 halos into ten equal-width bins based on $\log_{10}(M_{500}/M_{\odot})$. For each bin, generate a stacked "stamp" image of the temperature residuals to qualitatively verify the presence of the kSZ signal and the effectiveness of the foreground suppression.
+
+5. **Optical Depth Estimation**: Compute the estimator $\hat{\tau} = -\frac{c}{T_{CMB} \langle v_r^2 \rangle} \sum (T_{res, i}) \cdot v_{r,i}$, where $T_{CMB} = 2.7255$ K. Apply the transfer function derived in Step 2 to correct the recovered $\hat{\tau}$ for signal attenuation. Calculate the statistical uncertainty for each bin using bootstrapping (resampling halos).
+
+6. **Null Tests and Robustness**: Perform a null test by shuffling the peculiar velocities $v_{r,i}$ across the halo catalog and re-running the estimator to confirm that the recovered signal is physically correlated with the velocities. Additionally, compute the standard pairwise kSZ estimator $\sum (T_i - T_j) \cdot \text{sign}(r_{ij})$ as a cross-check to ensure the individual-halo extraction is not biased by large-scale residuals.
+
+7. **Scaling Relation Analysis**: Perform a linear regression in log-log space ($\log \hat{\tau}$ vs $\log M$) to determine the slope and normalization of the recovered scaling relation. Compare the results against the theoretical $\tau \propto M^{2/3}$ law.
+
+8. **Performance Benchmarking**: Quantify the reconstruction fidelity by comparing the results against two baselines: (a) the "ideal" case using the `ksz_map_truth.npy` directly, and (b) the "noise-limited" case using the ground-truth CMB map for subtraction. Calculate the Signal-to-Noise Ratio (SNR) for each mass bin to identify the mass range where the kSZ signal is most reliably constrained.

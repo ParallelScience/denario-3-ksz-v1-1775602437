@@ -1,0 +1,75 @@
+{
+    "sub_tasks": [
+        {
+            "bullet_points": [
+                "Load the observed map, ground-truth CMB map, kSZ truth map, and halo catalog.",
+                "Verify pixel indexing and map dimensions.",
+                "Print and verify the RMS values of all loaded maps against expected values (60, 57, 0.14, 20 μK).",
+                "Print summary statistics (min, max, mean) of the halo catalog arrays (mass, tau, v_los, delta_T_ksz_uK).",
+                "Calculate the beam function B(ℓ) for the 1.4 arcmin FWHM Gaussian beam.",
+                "Compute the power spectra Cℓ^CMB and Cℓ^noise and save them to disk."
+            ],
+            "sub_task": "Data Preparation and Validation",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Construct the Wiener filter W(ℓ) = (Cℓ^CMB * B(ℓ)^2) / (Cℓ^CMB * B(ℓ)^2 + Cℓ^noise) to recover the CMB signal.",
+                "Apply the filter to the observed map to produce a cleaned map and compute the residual map (observed - filtered CMB).",
+                "Apply the same filter to the ksz_map_truth.npy and compute the signal transfer function as the ratio of aperture-summed filtered kSZ signal to aperture-summed true kSZ signal at halo positions.",
+                "Save the residual map and the transfer function to disk."
+            ],
+            "sub_task": "Wiener Filter Construction and Transfer Function",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Extract both single-pixel and aperture-summed (1.5x beam FWHM) temperature values at halo locations from the residual map and the kSZ truth map.",
+                "Compare the two extraction methods to validate the optimal aperture radius by maximizing the recovered signal-to-noise.",
+                "Save the extracted photometry values for each halo to disk."
+            ],
+            "sub_task": "Signal Extraction and Aperture Photometry",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Divide the 5,000 halos into ten equal-width bins based on log10(M500/M☉).",
+                "Compute and save the mean and standard error of the true delta_T_ksz_uK values within each mass bin.",
+                "Generate stacked \"stamp\" images of the temperature residuals for each mass bin.",
+                "Save the stacked stamps and bin statistics to disk."
+            ],
+            "sub_task": "Mass Binning and Stacking",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Compute the estimator τ̂ for each mass bin using the velocity-weighted cross-correlation.",
+                "Apply the transfer function to correct for signal attenuation.",
+                "Perform a null test by shuffling peculiar velocities (500 iterations) and re-running the estimator.",
+                "Compute the standard pairwise kSZ estimator as a cross-check.",
+                "Save the final τ̂ values, bootstrap distributions (500 iterations per bin), and null test results to disk."
+            ],
+            "sub_task": "Optical Depth Estimation and Null Tests",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Perform linear regression in log-log space to determine the τ-M scaling relation.",
+                "Compare results against the theoretical τ ∝ M^(2/3) law.",
+                "Calculate SNR for each mass bin and compare against the \"ideal\" (kSZ truth) and \"noise-limited\" (CMB-subtracted) baselines.",
+                "Generate a multi-panel figure showing the τ-M relation, SNR per bin, and null test results."
+            ],
+            "sub_task": "Scaling Relation Analysis and Benchmarking",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Synthesize findings, interpreting the effectiveness of Wiener-filtered CMB subtraction and the recovered τ-M slope.",
+                "Report numerical values for: scaling relation slope/normalization, transfer function correction factors, null test significance, pairwise kSZ estimator amplitude, and SNR per bin.",
+                "Write the full Results section of the report, ensuring all quantitative findings and plot interpretations are included for the paper writer."
+            ],
+            "sub_task": "Results Interpretation and Reporting",
+            "sub_task_agent": "researcher"
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+[
+  {
+    "name": "plan_comparator",
+    "content": "",
+    "timestamp": "2026-04-07 23:20:23",
+    "cost": {
+      "Agent": [
+        "plan_comparator"
+      ],
+      "Model": [
+        "gemini-3.1-flash-lite-preview"
+      ],
+      "Cost": [
+        0.0009097500000000001
+      ],
+      "Prompt Tokens": [
+        2937
+      ],
+      "Completion Tokens": [
+        117
+      ],
+      "Total Tokens": [
+        3054
+      ]
+    }
+  },
+  {
+    "name": "_Group_Tool_Executor",
+    "content": "Plan comparator decision recorded: reuse=False, restart_at_step=1. The new plan significantly changes the methodology (e.g., switching from a Wiener filter to a matched filter, changing the order of operations, and adding new diagnostic/statistical steps like jackknife resampling and SNR scaling analysis). Because the core processing pipeline and the sequence of operations are fundamentally different, the previous execution's outputs cannot be reliably reused for the new workflow. Therefore, it is necessary to restart from the beginning.",
+    "timestamp": "2026-04-07 23:20:23",
+    "cost": {
+      "Agent": [],
+      "Model": [],
+      "Cost": [],
+      "Prompt Tokens": [],
+      "Completion Tokens": [],
+      "Total Tokens": []
+    }
+  },
+  {
+    "name": "terminator",
+    "content": "TERMINATE",
+    "timestamp": "2026-04-07 23:20:23",
+    "cost": {
+      "Agent": [],
+      "Model": [],
+      "Cost": [],
+      "Prompt Tokens": [],
+      "Completion Tokens": [],
+      "Total Tokens": []
+    }
+  }
+]

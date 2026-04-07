@@ -1,0 +1,84 @@
+{
+    "sub_tasks": [
+        {
+            "bullet_points": [
+                "Load the observed map, halo catalog, and ground-truth maps.",
+                "Print summary statistics (RMS, min, max) for all maps and catalog fields (mass, velocity, tau) to validate against specifications.",
+                "Convert pixel indices to physical coordinates and save the processed catalog.",
+                "Generate and save a multi-panel diagnostic figure showing the observed, CMB truth, kSZ truth, and noise maps with colorbars and RMS annotations."
+            ],
+            "sub_task": "Data Preparation and Baseline Validation",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Construct the CMB power spectrum C_ell^CMB using the provided formula and the noise power spectrum C_ell^noise based on the 20 μK RMS.",
+                "Construct the matched filter Ψ(ell) = B(ell) / (C_ell^CMB + C_ell^noise) using the Gaussian beam B(ell).",
+                "Generate and save a diagnostic plot comparing the power spectra of the observed map, CMB truth, noise, and the matched filter transfer function.",
+                "Apply the filter to the observed map and save the resulting filtered map."
+            ],
+            "sub_task": "Matched Filter Construction and Application",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Implement the pairwise estimator τ_hat(r) on both the raw observed map and the ksz_map_truth.npy.",
+                "Calculate temperature differences ΔT_ij and velocity differences Δv_ij for all pairs.",
+                "Compute the estimator in radial bins and save the results for both maps.",
+                "Generate and save a plot comparing the pairwise estimator results from the observed map and the truth map to quantify the noise penalty."
+            ],
+            "sub_task": "Pairwise kSZ Estimator Implementation",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Divide the 5,000 halos into ten equal-width bins based on log10(M500/M_sun).",
+                "Extract the mean optical depth <τ> per bin by applying the velocity-weighted cross-correlation estimator Σ(T_i * v_r,i) / Σ(v_r,i^2) at halo positions on the filtered map.",
+                "Compute the true mean τ per bin from the catalog for comparison.",
+                "Perform a linear regression in log-log space to extract the slope and normalization of the τ-M relation and save the parameters."
+            ],
+            "sub_task": "Mass Binning and Scaling Relation Analysis",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Extract cutouts centered on each halo from both the filtered map and the raw observed map.",
+                "Stack the cutouts within each mass bin for both map types.",
+                "Generate a multi-panel plot showing the stacked signals (filtered vs. raw) for the lowest and highest mass bins.",
+                "Generate a plot showing the recovered τ-M scaling relation with jackknife error bars and the theoretical M^(2/3) curve."
+            ],
+            "sub_task": "Stacking and Visualization",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Implement leave-one-out jackknife resampling over ~20 spatial subregions of the 10x10 deg patch.",
+                "Conduct a null test by shuffling the peculiar velocities v_r,i and re-calculating the estimator.",
+                "Save the covariance matrix, uncertainty estimates, and null test results.",
+                "Generate a plot comparing the real signal with the null test result."
+            ],
+            "sub_task": "Statistical Uncertainty and Robustness Tests",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Quantify the SNR as a function of the number of halos by subsampling the catalog.",
+                "Compare the SNR of the observed map against the truth kSZ map.",
+                "Generate a plot of SNR vs. number of halos with the theoretical sqrt(N) scaling overplotted.",
+                "Print the final integrated SNR values and the formulas used."
+            ],
+            "sub_task": "Sensitivity and SNR Analysis",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Synthesize all quantitative results, including the τ-M scaling slope, normalization, SNR values, and null test significance.",
+                "Interpret all plots generated in previous steps, referencing them by their descriptive filenames.",
+                "Provide a comprehensive discussion on the fidelity of the recovered optical depth and the effectiveness of the matched filter.",
+                "Structure the final Results section with labeled subsections: baseline validation, matched filter, pairwise estimator, mass scaling, stacking, jackknife uncertainties, and SNR analysis."
+            ],
+            "sub_task": "Results Synthesis and Reporting",
+            "sub_task_agent": "researcher"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+Classifier: Step 1 — Determining archive...
+  Archive: astro-ph — The paper focuses on the kinetic Sunyaev-Zel'dovich effect, galaxy clusters, and Cosmic Microwave Background analysis, which are core topics in astrophysics and cosmology.
+Classifier: Step 2 — Determining subcategory within 'astro-ph'...
+  Primary: astro-ph.CO
+  Secondary: astro-ph.IM
+  Justification: The paper focuses on the kinetic Sunyaev-Zel'dovich (kSZ) effect, which is a primary probe of cosmology and large-scale structure (astro-ph.CO). The methodology involves significant development of data analysis techniques, Wiener filtering, and simulation-based validation, which falls under instrumentation and methods (astro-ph.IM).
+Classification completed in 0 min 2 sec. Cost: $0.0000

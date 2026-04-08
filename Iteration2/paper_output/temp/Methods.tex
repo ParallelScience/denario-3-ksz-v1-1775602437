@@ -1,0 +1,42 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{graphicx} 
+
+
+\begin{document}
+
+\subsection{Dataset and simulations}
+The analysis in this work is performed on a simulated dataset designed to replicate observations from a modern, high-resolution CMB experiment. The dataset consists of a single-frequency temperature map covering a $10^\circ \times 10^\circ$ (100 deg$^2$) patch of the sky. The simulated map is a linear superposition of three components: (1) a primary CMB anisotropy realization based on a standard $\Lambda$CDM power spectrum, (2) the kinetic Sunyaev-Zel'dovich (kSZ) signal generated from a catalog of halos, and (3) instrumental white noise. The map is convolved with a Gaussian beam with a Full Width at Half Maximum (FWHM) of 1.4 arcminutes. The instrumental noise is modeled as a homogeneous white noise field with a standard deviation of 20 $\mu$K per pixel.
+
+The analysis relies on an accompanying halo catalog containing 5,000 objects within the map's footprint, spanning a mass range of $10^{13} < M_{500} / M_{\odot} < 10^{15}$. For each halo, the catalog provides its sky position, its mass ($M_{500}$), and its true line-of-sight peculiar velocity, $v_r$, relative to the CMB rest frame. The ground-truth kSZ signal map, with a root-mean-square (RMS) fluctuation of 0.14 $\mu$K, is used to generate the kSZ component of the total observed map, which has a total RMS of 60.41 $\mu$K, dominated by the primary CMB (56.98 $\mu$K RMS) and noise (19.99 $\mu$K RMS).
+
+\subsection{CMB foreground mitigation}
+Given that the primary CMB anisotropies are the dominant astrophysical contaminant, their mitigation is a critical first step. We employ a Wiener filter, which is the optimal linear filter for extracting a signal from a noisy background when the statistical properties of the signal and noise are known. The filter is constructed in Fourier space and is defined as:
+\begin{equation}
+    \mathcal{W}(\ell) = \frac{C_\ell^{\text{CMB}}}{C_\ell^{\text{CMB}} + C_\ell^{\text{kSZ}} + C_\ell^{\text{noise}}}
+\end{equation}
+where $C_\ell^{\text{CMB}}$, $C_\ell^{\text{kSZ}}$, and $C_\ell^{\text{noise}}$ are the angular power spectra of the primary CMB, the kSZ signal, and the instrumental noise, respectively. The theoretical $\Lambda$CDM power spectrum is used for $C_\ell^{\text{CMB}}$, and the noise power spectrum is modeled as a constant corresponding to the 20 $\mu$K white noise level. All theoretical power spectra are multiplied by the instrumental beam transfer function, $B(\ell)^2$, where $B(\ell) = \exp(-\ell^2 \sigma_b^2 / 2)$ and $\sigma_b = \text{FWHM} / \sqrt{8 \ln 2}$.
+
+The Wiener filter is applied to the Fourier transform of the observed map, $T_{\text{obs}}(\ell)$, to estimate the CMB component, $T_{\text{CMB, est}}(\ell) = \mathcal{W}(\ell) T_{\text{obs}}(\ell)$. This estimated CMB is then subtracted from the observed map in real space to produce a ``cleaned'' map, $T_{\text{cleaned}} = T_{\text{obs}} - T_{\text{CMB, est}}$, from which the kSZ signal is subsequently extracted.
+
+\subsection{The pairwise kSZ estimator}
+To measure the kSZ signal, we use a pairwise statistical estimator. This technique circumvents the need to detect individual cluster decrements by correlating the temperature differences between pairs of halos with their relative line-of-sight velocities. The estimator coherently sums the kSZ signal, which is proportional to $v_r$, while averaging down the uncorrelated instrumental noise and residual CMB fluctuations. The mean optical depth, $\langle \tau \rangle$, is calculated as:
+\begin{equation}
+    \hat{\tau} = - \frac{c \sum_{i \neq j} w_{ij} (T_i - T_j) (v_{r,i} - v_{r,j})}{\sum_{i \neq j} w_{ij} (v_{r,i} - v_{r,j})^2}
+\end{equation}
+where the sum is over all unique pairs of halos $(i, j)$. In this expression, $T_i$ and $T_j$ are the temperature values in the cleaned map at the positions of the respective halos, and $v_{r,i}$ and $v_{r,j}$ are their line-of-sight peculiar velocities.
+
+The weights, $w_{ij}$, are chosen to optimize the signal-to-noise ratio of the measurement. We employ a mass-weighting scheme where $w_{ij} \propto M_i M_j$, which up-weights pairs of more massive halos that are expected to contribute a stronger kSZ signal. An attempt to reconstruct the velocity field from the sparse halo catalog using linear theory proved unsuccessful, yielding velocities uncorrelated with the ground truth. Therefore, to establish an upper limit on the performance of the estimator under the given noise conditions, we use the ground-truth peculiar velocities provided in the simulation catalog for all subsequent analysis.
+
+\subsection{Statistical analysis and evaluation}
+To constrain the scaling relation between optical depth and halo mass, we first divide the 5,000 halos into 10 bins of approximately equal halo count based on their mass, $M_{500}$. The pairwise estimator is then applied to the halos within each mass bin to obtain a measurement of the mean optical depth, $\langle \tau \rangle_k$, for each bin $k$. We fit a power-law model of the form $\tau = A (M / 10^{14} M_\odot)^\alpha$ to these binned measurements. The fit is performed via a linear regression in log-log space to determine the best-fit normalization, $A$, and slope, $\alpha$.
+
+The statistical uncertainties and the full covariance matrix of the binned $\langle \tau \rangle_k$ measurements are estimated using a Jackknife resampling technique. The 100 deg$^2$ map is divided into 200 contiguous spatial subregions. The entire analysis pipeline, from pairwise estimation to binning, is repeated 200 times, each time omitting one of the subregions from the halo catalog. The covariance matrix is then computed from the scatter among these 200 Jackknife realizations, which properly accounts for spatial correlations in the signal and noise.
+
+The overall statistical significance of the kSZ detection is quantified by the signal-to-noise ratio (SNR) of the full-sample pairwise measurement. To validate that the measured signal is of physical origin and not a systematic artifact, we perform a null test. This is done by randomly shuffling the peculiar velocities among the fixed halo positions 500 times and re-calculating the pairwise estimator for each shuffle. The distribution of these null-test measurements is used to compute a p-value, defined as the fraction of random realizations that produce a signal with an amplitude greater than or equal to the one measured with the true velocities.
+
+\end{document}
+                

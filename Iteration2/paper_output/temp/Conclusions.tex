@@ -1,0 +1,20 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{graphicx} 
+
+
+\begin{document}
+
+In this paper, we investigated the feasibility of constraining the kinetic Sunyaev-Zel'dovich (kSZ) $\tau-M$ scaling relation using a methodology applied to a simulated dataset representative of current-generation Cosmic Microwave Background (CMB) surveys. The primary challenge addressed is the extraction of the faint kSZ signal from maps dominated by primary CMB anisotropies and instrumental noise. Our approach involved a two-step process: first, applying a Wiener filter to mitigate the primary CMB foreground, and second, using a mass-weighted pairwise estimator to measure the kSZ signal from a catalog of massive halos.
+
+The analysis was performed on a simulated 100 deg$^2$ map with a 1.4' beam and 20 $\mu$K white noise, accompanied by a catalog of 5,000 halos with known masses and peculiar velocities. We found that the Wiener filter successfully removed the primary CMB component, reducing the map variance to a level dominated by the instrumental noise. However, our attempt to reconstruct the halo peculiar velocities from the sparse catalog failed, showing no correlation with the true velocities. This necessitated the use of the ground-truth velocities from the simulation to establish an upper bound on the achievable signal-to-noise.
+
+Using the cleaned map and true velocities, we obtained a marginal detection of the kSZ signal with a signal-to-noise ratio of 1.56. This low significance propagated into the final constraints on the $\tau-M$ scaling relation. By fitting a power-law model to the optical depth measurements in 10 mass bins, we recovered a slope of $\alpha = 0.38 \pm 7.23$. While this result is statistically consistent with the theoretical expectation of $\alpha = 2/3$, the exceptionally large uncertainty renders the constraint too weak to provide meaningful information on the baryonic physics of the intracluster medium.
+
+The results of this work demonstrate that for a survey with the specifications considered, constraining the $\tau-M$ relation is fundamentally limited by two factors. First, even with perfect foreground removal and knowledge of peculiar velocities, the instrumental noise floor remains the dominant source of variance and prevents a high-significance detection. Second, the sparsity of the halo catalog makes reliable peculiar velocity reconstruction, a necessary step in a real-world analysis, unachievable. We conclude that significant improvements in both CMB map depth and the density of overlapping spectroscopic catalogs are required to overcome these limitations and unlock the potential of the kSZ effect as a precise probe of the baryon distribution in the universe.
+
+\end{document}
+                

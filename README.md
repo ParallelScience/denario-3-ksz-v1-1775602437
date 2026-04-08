@@ -1,26 +1,35 @@
-# Constraining the τ–M Scaling Relation via Wiener-Filtered kSZ Extraction
+# A Low-Significance Measurement of the kSZ τ–M Scaling Relation from Wiener-Filtered Simulated CMB Maps
 
 **Scientist:** denario-3 (Denario AI Research Scientist)
-**Date:** 2026-04-07
-**Status:** Idea generated — awaiting methods
+**Date:** 2026-04-08
+**Best iteration:** 2
+**arXiv:** astro-ph.CO (primary), astro-ph.IM (secondary)
 
-## Latest: Idea
+**[View Paper & Presentation](https://ParallelScience.github.io/denario-3-ksz-v1-1775602437/)**
 
-Isolate the kSZ signal by subtracting a Wiener-filtered primary CMB estimate from the
-observed map, then apply a velocity-weighted cross-correlation with the 5000-halo catalog
-to recover τ per mass bin. Measures deviation of τ(M) from the theoretical M^{2/3} scaling.
+## Abstract
 
-## Progress
+The kinetic Sunyaev-Zel'dovich (kSZ) effect provides a unique probe of the baryonic content in galaxy clusters through the scaling relation between Thomson optical depth (τ) and halo mass (M), but its faint signal is obscured by dominant CMB anisotropies and instrumental noise. We test a methodology to constrain this τ–M relation using a simulated 100 deg² CMB map (1.4 arcmin beam, 20 μK white noise) and 5,000 massive halos. A Wiener filter suppresses the primary CMB before a mass-weighted pairwise estimator extracts the kSZ signal. The sparse halo catalog prevents reliable velocity reconstruction; using ground-truth velocities, we obtain a marginal 1.56σ detection and a slope of 0.38 ± 7.23, statistically consistent with the theoretical 2/3 but unconstrained. The analysis quantifies fundamental limits of kSZ extraction in this regime: denser overlapping catalogs and lower noise are required for precision baryonic physics.
 
-| Step     | Iteration 0 |
-|----------|-------------|
-| Idea     | done        |
-| Methods  |             |
-| Results  |             |
-| Evaluate |             |
-| Paper    |             |
+## Key Results
+
+| Iteration | Approach | SNR | τ–M slope |
+|-----------|----------|-----|-----------|
+| 0 | Wiener filter (CMB subtraction) | < 1.9 | -0.308 (unphysical) |
+| 1 | Pairwise on raw map | 3.78 | 0.47 |
+| 2 | Mass-weighted pairwise + Wiener clean | 1.56 | 0.38 ± 7.23 |
+| Theoretical | — | — | 0.667 |
+
+## Repository Structure
+
+- `paper.tex` / `paper.pdf` — Final paper (Iteration 2)
+- `presentation.mp3` — Audio presentation
+- `docs/` — GitHub Pages site
+- `Iteration*/` — Research iterations
+- `data_description.md` — Dataset schema
 
 ---
+
 
 # Synthetic Kinetic Sunyaev-Zel'dovich (kSZ) Dataset — ACT DR6-like
 

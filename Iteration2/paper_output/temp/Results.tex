@@ -1,0 +1,63 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{graphicx} 
+
+
+\begin{document}
+
+The analysis pipeline, as described in the Methods section, was applied to the simulated 100 deg$^2$ CMB map to measure the kinetic Sunyaev-Zel'dovich (kSZ) signal and constrain the scaling relation between Thomson optical depth ($\tau$) and halo mass ($M$). We present the results of each major step, from foreground mitigation to the final parameter constraints.
+
+\subsection{Performance of CMB foreground mitigation}
+
+The primary challenge in measuring the kSZ effect is the overwhelming contamination from primary CMB anisotropies and instrumental noise. The simulated map has a total root-mean-square (RMS) fluctuation of 60.41 $\mu$K, with the primary CMB contributing 56.98 $\mu$K and the instrumental noise 19.99 $\mu$K. The ground-truth kSZ signal, with an RMS of only 0.14 $\mu$K, is deeply embedded within these larger signals.
+
+To isolate the kSZ signal, we first applied a Wiener filter designed to optimally suppress the CMB component. Figure \ref{fig:image0} shows the angular power spectra of the various map components. The kSZ signal power spectrum ($C_\ell^{\text{kSZ}}$) is sub-dominant to both the CMB ($C_\ell^{\text{CMB}}$) and noise ($C_\ell^{\text{noise}}$) power spectra across all relevant angular scales. The Wiener filter transfer function, $\mathcal{W}(\ell)$, is constructed to down-weight the Fourier modes where the CMB and noise are dominant.
+
+After estimating the CMB component using the filter and subtracting it from the observed map, the resulting "cleaned" map has an RMS of 19.55 $\mu$K. This value is very close to the 20 $\mu$K RMS of the instrumental noise component, demonstrating that the Wiener filter successfully removed the primary CMB anisotropies to a level below the noise floor. While effective at reducing variance, this filtering process also attenuates the kSZ signal itself, a factor that is accounted for in the subsequent analysis. The primary source of variance in the cleaned map is now the instrumental noise.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{../input_files/plots/step_4_ksz_analysis_summary_2_1775608915.png}
+    \caption{Summary of the kinetic Sunyaev-Zel'dovich (kSZ) analysis. \textbf{(a)} The recovered Thomson optical depth ($\tau$) as a function of halo mass ($M_{500}$). The measurements for 10 mass bins are shown with large Jackknife-derived error bars. The best-fit power law (solid red line) is poorly constrained and statistically consistent with the theoretical input model (dashed black line) due to the noise-dominated measurements. \textbf{(b)} A comparison of reconstructed and true line-of-sight velocities reveals no correlation (Pearson $r=-0.026$), a failure attributed to the sparse halo catalog. \textbf{(c)} Velocity-weighted stacked cutouts of the kSZ signal for three representative mass bins, visually illustrating the low signal-to-noise of the detection. \textbf{(d)} The overall detection signal-to-noise ratio (SNR) improves from 0.51 (no filter) to 1.56 after applying the Wiener filter to mitigate CMB foregrounds. The SNR is maximized when using the true velocities (blue bar); using the poorly reconstructed velocities (orange bar) yields no detection.}
+    \label{fig:image1}
+\end{figure*}
+
+\subsection{Fidelity of velocity reconstruction}
+
+The pairwise kSZ estimator requires the line-of-sight peculiar velocities of the halos. In a real-world scenario, these must be reconstructed from the spatial distribution of tracers. We attempted to reconstruct the velocity field from the provided catalog of 5,000 halos using linear perturbation theory. However, this reconstruction was unsuccessful.
+
+Figure \ref{fig:image1}b shows a scatter plot of the reconstructed velocities versus the ground-truth velocities for each halo. There is no discernible correlation between the two, quantified by a Pearson correlation coefficient of $r = -0.026$. This failure is a direct result of the sparsity of the halo catalog. With only 5,000 massive halos over 100 deg$^2$, the resulting density field is dominated by shot noise and does not adequately trace the large-scale matter distribution that sources the peculiar velocity field.
+
+Using these uncorrelated, reconstructed velocities in the pairwise estimator results in a null measurement, as shown by the orange bar in Figure \ref{fig:image1}d. To assess the fundamental limits imposed by the map's noise properties, we proceeded with the analysis using the ground-truth peculiar velocities from the simulation. This provides an upper bound on the signal-to-noise that could be achieved with this map, assuming a perfect velocity reconstruction.
+
+\subsection{Pairwise kSZ signal detection}
+
+Using the Wiener-filtered map and the true peculiar velocities, we applied the mass-weighted pairwise estimator to the full sample of 5,000 halos. The statistical significance of the measurement was assessed using a Jackknife resampling method to compute the variance.
+
+The analysis yields a marginal detection of the kSZ signal with a signal-to-noise ratio (SNR) of 1.56. As illustrated in Figure \ref{fig:image1}d, this represents a significant improvement over the SNR of 0.51 obtained without Wiener filtering, confirming the critical role of foreground mitigation. The low overall significance indicates that even with perfect velocity information, the measurement is fundamentally limited by the instrumental noise in the map. The velocity-weighted stacked cutouts for three mass bins, shown in Figure \ref{fig:image1}c, provide a visual confirmation of the low-S/N nature of the signal.
+
+To verify that the measured signal is not a systematic artifact, we performed a null test by randomly shuffling the velocities among the halos 500 times and re-computing the pairwise statistic. The distribution of the null-test results was consistent with zero, and the measured signal corresponds to a p-value of 0.146. This means there is a 14.6\% probability of obtaining a signal of this amplitude or greater from random chance in a map with these noise properties. This result, consistent with the 1.56$\sigma$ significance, confirms that while the signal is weak, it is consistent with a physical kSZ origin rather than a systematic bias in the pipeline.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\columnwidth]{../input_files/plots/step_1_wiener_filter_diagnostic_1_1775607926.png}
+    \caption{Angular power spectra, $C_{\ell}$, of the signal and noise components in the simulated map. The plot illustrates that the kinetic Sunyaev-Zel'dovich (kSZ) signal (green) is sub-dominant by several orders of magnitude compared to the primary Cosmic Microwave Background (CMB, blue), which is shown convolved with the 1.4 arcmin instrumental beam, and the instrumental white noise (red). The transfer function of the Wiener filter, $W(\ell)$ (purple, right axis), is constructed from these components to optimally suppress the dominant CMB and noise contributions by down-weighting the Fourier modes where their power is highest. This filtering is an essential step to isolate the faint kSZ signal for subsequent analysis.}
+    \label{fig:image0}
+\end{figure}
+
+\subsection{Constraints on the $\tau-M$ scaling relation}
+
+The primary goal of this work is to constrain the power-law scaling relation, $\tau = A (M / 10^{14} M_\odot)^\alpha$. To this end, we divided the halo catalog into 10 bins of mass and applied the pairwise estimator to each bin. The resulting measurements of the mean optical depth, $\langle \tau \rangle_k$, are plotted against the mean mass of each bin in Figure \ref{fig:image1}a.
+
+The error bars on the binned measurements, derived from the Jackknife covariance matrix, are large, indicating that the signal in each mass bin is noise-dominated. We performed a linear regression in log-log space to fit for the normalization $A$ and slope $\alpha$. The best-fit parameters are:
+\begin{align}
+    A &= (1.32 \pm 14.7) \times 10^{-4} \\
+    \alpha &= 0.38 \pm 7.23
+\end{align}
+The recovered slope of $\alpha = 0.38$ is nominally shallower than the theoretical expectation of $\alpha = 2/3$ from self-similar models (dashed line in Figure \ref{fig:image1}a). However, the uncertainty on the slope is exceptionally large ($\pm 7.23$), rendering the measurement statistically consistent with the theoretical model. The constraint is too weak to provide any meaningful information on the baryonic physics of the intracluster medium. This result is a direct consequence of the low overall SNR of the kSZ detection, which propagates through to the binned measurements. The analysis demonstrates that for a survey with a 1.4' beam and 20 $\mu$K white noise, constraining the $\tau-M$ relation is fundamentally limited by instrumental noise.
+
+\end{document}
+                

@@ -1,0 +1,20 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{graphicx} 
+
+
+\begin{document}
+
+The standard cosmological model successfully describes the formation of large-scale structure, yet the distribution of baryonic matter within the dark matter halos hosting galaxies and clusters remains a key uncertainty. The complex interplay between gravity, gas cooling, star formation, and energetic feedback processes dictates how baryons populate these potential wells. A precise understanding of this relationship is essential for refining models of galaxy evolution and for accurately interpreting cosmological probes that trace the matter distribution. A primary challenge is observing the diffuse, ionized gas that constitutes the bulk of baryonic mass in these systems, necessitating specialized observational techniques.
+
+The kinetic Sunyaev-Zel'dovich (kSZ) effect provides a unique tool to probe this diffuse gas. This effect arises from the Doppler shift of Cosmic Microwave Background (CMB) photons as they Thomson scatter off free electrons moving with a peculiar velocity relative to the CMB rest frame. The resulting change in the observed CMB temperature at a given location is $\Delta T / T_{\text{CMB}} = - \tau v_r / c$, an expression directly proportional to the line-of-sight component of the halo's peculiar velocity, $v_r$, and the Thomson optical depth, $\tau = \int n_e \sigma_T dl$, integrated along the line of sight through the halo. The optical depth $\tau$ quantifies the total column density of free electrons. The scaling relation between this optical depth and the host halo mass, the $\tau-M$ relation, serves as a powerful diagnostic of the intracluster medium. Simple, self-similar models predict a scaling of $\tau \propto M^{2/3}$, and observational deviations from this baseline can directly constrain the impact of baryonic physics, such as feedback from active galactic nuclei that may expel gas from halo centers and alter the overall baryon fraction.
+
+Despite its potential, measuring the kSZ effect is a formidable observational challenge. The signal is exceptionally faint, typically on the order of a few microkelvin, and is embedded within maps containing much larger temperature fluctuations. The primary CMB anisotropies, with a root-mean-square amplitude of nearly 100 $\mu$K, act as a dominant astrophysical foreground. Furthermore, instrumental noise, particularly for ground-based experiments, can exceed the primary CMB signal on the small angular scales where the kSZ signal from individual clusters is most prominent. The central problem, therefore, is to determine whether a faint, spatially localized signal can be robustly extracted from these overwhelming sources of variance using data characteristic of modern CMB surveys.
+
+In this work, we investigate a methodology designed to measure the $\tau-M$ scaling relation using a simulated CMB map that mirrors the properties of current-generation surveys. Our approach first mitigates the dominant primary CMB contamination by applying a Wiener filter. This filter optimally suppresses signals based on their known statistical properties, producing a "cleaned" map where the kSZ signal is more accessible relative to the primary CMB. Subsequently, we apply a pairwise statistical estimator to this cleaned map, which correlates the temperature differences between pairs of halos with their relative line-of-sight velocities to coherently sum the kSZ signal while averaging down uncorrelated noise. By performing this analysis on a controlled simulation with a known halo catalog, velocity field, and noise level, we can rigorously quantify the efficacy of this pipeline. The primary goal is to assess the fundamental limitations imposed by instrumental noise and halo catalog sparsity on our ability to constrain the physics of the intracluster medium.
+
+\end{document}
+                

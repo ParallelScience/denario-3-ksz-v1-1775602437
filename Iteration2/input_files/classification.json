@@ -1,0 +1,7 @@
+{
+  "primary_category": "astro-ph.CO",
+  "secondary_categories": [
+    "astro-ph.IM"
+  ],
+  "justification": "The paper focuses on the kinetic Sunyaev-Zel'dovich (kSZ) effect, which is a primary probe of cosmology and large-scale structure (astro-ph.CO). The methodology involves significant development of data analysis techniques, Wiener filtering, and simulation-based validation, which falls under instrumentation and methods (astro-ph.IM)."
+}

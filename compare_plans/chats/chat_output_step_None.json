@@ -2,7 +2,7 @@
   {
     "name": "plan_comparator",
     "content": "",
-    "timestamp": "2026-04-07 23:20:23",
+    "timestamp": "2026-04-08 00:21:53",
     "cost": {
       "Agent": [
         "plan_comparator"
@@ -11,23 +11,23 @@
         "gemini-3.1-flash-lite-preview"
       ],
       "Cost": [
-        0.0009097500000000001
+        0.0008814999999999999
       ],
       "Prompt Tokens": [
-        2937
+        2848
       ],
       "Completion Tokens": [
-        117
+        113
       ],
       "Total Tokens": [
-        3054
+        2961
       ]
     }
   },
   {
     "name": "_Group_Tool_Executor",
-    "content": "Plan comparator decision recorded: reuse=False, restart_at_step=1. The new plan significantly changes the methodology (e.g., switching from a Wiener filter to a matched filter, changing the order of operations, and adding new diagnostic/statistical steps like jackknife resampling and SNR scaling analysis). Because the core processing pipeline and the sequence of operations are fundamentally different, the previous execution's outputs cannot be reliably reused for the new workflow. Therefore, it is necessary to restart from the beginning.",
-    "timestamp": "2026-04-07 23:20:23",
+    "content": "Plan comparator decision recorded: reuse=False, restart_at_step=1. The new plan introduces significant changes in methodology, specifically replacing the matched filter with a Wiener filter, changing the velocity estimation approach (from using catalog velocities to reconstructing them via the Kaiser formula), and modifying the statistical analysis procedures (e.g., 100 jackknife regions vs 20). Because the core data processing and analysis steps are fundamentally different, the previous execution results cannot be reused.",
+    "timestamp": "2026-04-08 00:21:53",
     "cost": {
       "Agent": [],
       "Model": [],
@@ -40,7 +40,7 @@
   {
     "name": "terminator",
     "content": "TERMINATE",
-    "timestamp": "2026-04-07 23:20:23",
+    "timestamp": "2026-04-08 00:21:53",
     "cost": {
       "Agent": [],
       "Model": [],

@@ -1,0 +1,67 @@
+{
+    "sub_tasks": [
+        {
+            "bullet_points": [
+                "Load the observed map, halo catalog, ground-truth CMB map, kSZ map, and noise map.",
+                "Compute and print the RMS of each map (observed, CMB truth, kSZ truth, noise, and cleaned residual).",
+                "Construct a Wiener filter in Fourier space using the analytical ΛCDM power spectrum formula provided: $D_\\ell = 6000 \\times (\\ell/200)^2 / (1 + (\\ell/200)^{1.2})^{2.5} \\times \\exp(-(\\ell/4500)^2)$.",
+                "Apply the Wiener filter to the observed map to produce a \"cleaned\" map.",
+                "Save the cleaned map and a diagnostic plot showing the filter transfer function $W(\\ell)$ alongside the CMB, noise, and kSZ power spectra."
+            ],
+            "sub_task": "Data Pre-processing and CMB Filtering",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Extract temperature values at halo pixel positions from both the cleaned map and the raw observed map.",
+                "Implement the velocity-weighted cross-correlation estimator $\\hat{\\tau} = -(c / \\langle v_r^2 \\rangle) \\cdot \\frac{1}{N} \\sum_{i=1}^N T_{cleaned, i} \\cdot v_{r,i}$.",
+                "Incorporate mass-dependent weighting to optimize the signal-to-noise ratio.",
+                "Print the recovered mean $\\tau$ value and compare it to the catalog mean $\\tau$.",
+                "Save the per-halo temperature values and the computed pairwise statistics."
+            ],
+            "sub_task": "Pairwise kSZ Estimator Implementation",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Generate a continuous density grid from the halo catalog using a Cloud-in-Cell (CIC) scheme.",
+                "Reconstruct line-of-sight peculiar velocities using linear theory (Kaiser formula).",
+                "Compare reconstructed velocities against ground-truth $v_{los}$ by computing the Pearson correlation coefficient and RMS residual; print these metrics.",
+                "Divide the halo catalog into ten mass bins and calculate the mean optical depth for each bin using the cleaned map temperatures.",
+                "Compare recovered $\\tau$ per bin to the theoretical $\\tau(M) = 2 \\times 10^{-3} \\times (M/10^{14})^{2/3}$.",
+                "Save the reconstructed velocities and binned optical depth results."
+            ],
+            "sub_task": "Velocity Field Reconstruction and Mass-Binning",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Implement a Jackknife resampling procedure over 100 spatial subregions to estimate the covariance matrix of the pairwise kSZ signal.",
+                "Perform a null test by shuffling peculiar velocities at least 50 times to produce a distribution of null-test statistics.",
+                "Compute and print the detection significance in units of $\\sigma$ relative to the null distribution.",
+                "Save the covariance matrix and null test results."
+            ],
+            "sub_task": "Statistical Robustness and Null Tests",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Generate a single multi-panel figure including: (a) $\\tau-M$ scaling relation with Jackknife error bars and theoretical curve, (b) reconstructed vs. true velocity scatter plot with Pearson $r$, (c) stacked cutout images for low, mid, and high mass bins, and (d) SNR improvement comparison.",
+                "Print the fitted slope and normalization of the $\\tau-M$ relation with uncertainties.",
+                "Save the multi-panel figure to the database path."
+            ],
+            "sub_task": "Visualization and Sensitivity Analysis",
+            "sub_task_agent": "engineer"
+        },
+        {
+            "bullet_points": [
+                "Synthesize all quantitative results: fitted $\\tau-M$ slope/normalization, velocity reconstruction fidelity (Pearson $r$), detection significance, RMS values, and SNR improvement.",
+                "Discuss whether the recovered $\\tau-M$ slope is consistent with the input $2/3$ power law.",
+                "Interpret the impact of the Wiener filter and the robustness of the statistical detection.",
+                "Write the final Results section of the report, summarizing the findings and the performance of the methodology."
+            ],
+            "sub_task": "Results Interpretation and Reporting",
+            "sub_task_agent": "researcher"
+        }
+    ]
+}

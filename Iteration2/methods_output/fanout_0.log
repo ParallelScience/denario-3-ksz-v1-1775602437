@@ -1,0 +1,197 @@
+
+###### PROMPT BEGINS ########
+Human: You are provided with:
+- a description of the data
+- an idea
+- research plan to carry out the idea.
+
+Your task is to provide suggestions on how to improve the plan.
+Take into account and potential feedback (if any).
+If the plan is already good enough, do not give suggestions to improve it. If this is not first iteration, you will also be provided with the previous research plan along with some feedback on it. If this is the case, take into account the feedback provided when designing the new research plan. It is good to have a detailed plan, but not to have an overly complicated plan. If you dont have suggestions, just say that you dont have further suggestions. The idea should remain the same. No need to add code to the research plan, as another agent will write code given the research plan.
+
+Data description:
+
+# Synthetic Kinetic Sunyaev-Zel'dovich (kSZ) Dataset — ACT DR6-like
+
+## Overview
+
+This dataset simulates a kinetic Sunyaev-Zel'dovich (kSZ) temperature map at ACT DR6-like
+sensitivity, combined with a galaxy/cluster halo catalog. The kSZ effect arises from inverse
+Compton scattering of CMB photons off free electrons in moving galaxy clusters; it imprints
+a temperature anisotropy ΔT/T_CMB = -τ v_r/c, where τ is the Thomson optical depth and v_r
+is the line-of-sight peculiar velocity.
+
+## Map parameters
+
+- Sky patch: 10 × 10 degrees (flat-sky approximation)
+- Pixel size: 0.5 arcmin → 1200 × 1200 pixels
+- Beam FWHM: 1.4 arcmin (Gaussian, representative of ACT DR6 at 150 GHz)
+- White noise level: 10 μK-arcmin → 20 μK RMS per 0.5-arcmin pixel
+- Temperature unit: μK (micro-Kelvin)
+
+## File inventory (all absolute paths)
+
+### Temperature maps — shape (1200, 1200), dtype float32, units μK
+
+- `/home/node/work/projects/ksz_v1/observed_map.npy`
+  The total observed temperature map: CMB + beam-convolved kSZ signal + white noise.
+  This is the only quantity available to an observer. RMS ≈ 60 μK.
+
+- `/home/node/work/projects/ksz_v1/cmb_map_truth.npy`
+  The ground-truth beam-convolved primary CMB realization (Gaussian random field,
+  approximate ΛCDM TT power spectrum, Silk-damped above ℓ ~ 4500). RMS ≈ 57 μK.
+
+- `/home/node/work/projects/ksz_v1/ksz_map_truth.npy`
+  The ground-truth beam-convolved kSZ temperature map (sum of point-source contributions
+  from all halos, then beam-convolved). RMS ≈ 0.14 μK. The kSZ signal is deeply buried
+  under CMB and noise on a per-pixel basis.
+
+- `/home/node/work/projects/ksz_v1/noise_map.npy`
+  The white noise realization. RMS = 20 μK exactly (10 μK-arcmin / 0.5 arcmin pixel).
+
+### Halo catalog — `/home/node/work/projects/ksz_v1/halo_catalog.npz`
+
+Load with: `catalog = np.load('/home/node/work/projects/ksz_v1/halo_catalog.npz')`
+
+Arrays (all length 5000):
+- `ra` (float64): right ascension in degrees, uniform ∈ [0, 10]
+- `dec` (float64): declination in degrees, uniform ∈ [0, 10]
+- `mass_Msun` (float64): halo mass M_500 in solar masses, range 10^13 – 10^15 M_sun, log-uniform
+- `log_mass` (float64): log10(M_500 / M_sun), uniform ∈ [13, 15]
+- `v_los_km_s` (float64): line-of-sight peculiar velocity in km/s, Gaussian with σ = 300 km/s
+- `tau` (float64): Thomson optical depth, τ = 2×10^-3 × (M/10^14)^{2/3}, range [4.3×10^-4, 9.3×10^-3]
+- `delta_T_ksz_uK` (float64): kSZ temperature decrement ΔT = -τ v_r/c × T_CMB in μK, range [-71, +76] μK per halo
+- `ix_pixel` (int): map x-pixel index (column) of halo position
+- `iy_pixel` (int): map y-pixel index (row) of halo position
+
+## Data generating process
+
+1. **CMB map**: Gaussian random field in Fourier space with approximate ΛCDM TT power spectrum
+   D_ℓ = 6000 × (ℓ/200)² / (1 + (ℓ/200)^1.2)^2.5 × exp(−(ℓ/4500)²) μK²,
+   then beam-convolved (Gaussian, FWHM 1.4 arcmin).
+
+2. **Halo catalog**: 5000 halos with positions uniform on the 10×10 deg patch, masses
+   log-uniform in [10^13, 10^15] M_sun, v_los ~ N(0, 300² km²/s²).
+
+3. **kSZ map**: each halo is painted as a delta function at its pixel with amplitude
+   ΔT_kSZ, then the full map is Gaussian beam-convolved.
+
+4. **Noise**: i.i.d. Gaussian white noise, σ = 20 μK per pixel.
+
+5. **Observed map** = CMB + kSZ + noise.
+
+Random seed: 42.
+
+## Physical context and key scales
+
+- The kSZ signal is sub-dominant: kSZ map RMS (0.14 μK) ≪ noise (20 μK) ≪ CMB (57 μK).
+- Individual kSZ detections per halo are not possible (per-halo SNR ≪ 1).
+- Statistical detection requires cross-correlating the map with the halo catalog, exploiting
+  the known positions and (in real surveys) photometric/spectroscopic redshifts.
+- The canonical statistic is the *pairwise kSZ estimator*: Σ_{i≠j} (T_i − T_j) / v̂_{ij,r}
+  weighted by separation, which measures ⟨τ⟩ × pairwise velocity correlation.
+- The optical depth × velocity product ⟨τ v_r⟩ encodes both the baryon content of halos
+  and the large-scale velocity field (cosmological information).
+
+## Suggested analyses
+
+1. **Pairwise kSZ estimator**: measure ΔT̄(r) = Σ w_ij (T_i − T_j) as a function of
+   comoving separation r_ij; fit amplitude to extract ⟨τ_e⟩.
+2. **Aperture photometry / filtered maps**: apply a CMB-cleaning filter (e.g. matched
+   filter or simple high-pass) at halo positions; stack to measure mean kSZ signal as
+   a function of halo mass.
+3. **kSZ power spectrum**: estimate the kSZ contribution to the CMB temperature power
+   spectrum by cross-correlating the observed map with the halo density field.
+4. **Mass dependence of τ**: bin halos by mass and measure the τ–mass scaling relation
+   from stacked kSZ signal.
+5. **Velocity reconstruction**: compare the kSZ-inferred velocities against the known
+   true v_los to quantify reconstruction fidelity.
+
+
+Idea:
+**Title: Constraining the $\tau-M$ Scaling Relation via Wiener-Filtered kSZ Extraction**
+
+This study isolates the kSZ signal by subtracting a Wiener-filtered estimate of the primary CMB from the observed map, effectively mitigating the 57 $\mu$K foreground bottleneck before applying a velocity-weighted cross-correlation. Utilizing the 5,000-halo catalog, we will compute the estimator $\hat{\tau} = -\frac{c}{\langle v_r^2 \rangle} \sum_{i=1}^{N} (T_{obs, i} - T_{CMB, filtered, i}) \cdot v_{r,i}$, which accounts for the halo-specific line-of-sight peculiar velocities to extract the mean optical depth. By binning the halos into ten mass intervals within the $10^{13} - 10^{15} M_{\odot}$ range, we will measure the deviation of the recovered $\tau$ from the theoretical $M^{2/3}$ scaling law. The inclusion of the ground-truth CMB map for optimal foreground removal allows us to quantify the residual variance introduced by the 20 $\mu$K white noise floor. This approach isolates the baryon-mass dependence of the kSZ signal from the primary CMB field, providing a high-fidelity benchmark for the Thomson optical depth scaling in the presence of realistic instrument noise.
+
+Research plan:
+1. **Data Preparation and Analytical Beam Correction**: Load the observed map, halo catalog, and ground-truth maps. Define the analytical beam transfer function $B(\ell) = \exp(-\ell^2 \sigma_b^2 / 2)$ where $\sigma_b$ corresponds to the 1.4 arcmin FWHM. Calculate the expected kSZ signal for each halo by convolving the theoretical $\tau(M)$ model with this beam profile. This ensures that the regression analysis accounts for the constant beam dilution factor analytically, preventing it from being misattributed to mass-dependent scaling.
+
+2. **Optimal Pairwise Estimator Implementation**: Implement the pairwise kSZ estimator using inverse-variance weighting. For each pair of halos $(i, j)$, define the weight $w_{ij} = \frac{1}{\sigma_{noise}^2 + \sigma_{CMB}^2(\ell_{ij})}$, where $\sigma_{CMB}^2(\ell_{ij})$ is the variance of the primary CMB at the angular separation of the pair. Compute the estimator $\hat{\tau}(r) = \frac{\sum w_{ij} (T_i - T_j) \Delta v_{ij}}{\sum w_{ij} (\Delta v_{ij})^2}$ to maximize the signal-to-noise ratio, ensuring the calculation is performed on the raw observed map to maintain unbiasedness.
+
+3. **Velocity Field Reconstruction**: Perform a "blind" velocity reconstruction to simulate realistic survey conditions. Use the halo density field to estimate the line-of-sight peculiar velocities $\hat{v}_{los}$ via linear theory (Wiener filter approach). Compare these reconstructed velocities against the ground-truth $v_{los}$ provided in the catalog to quantify the reconstruction fidelity and the resulting systematic bias in $\tau$ recovery.
+
+4. **Mass-Binning and Scaling Relation Analysis**: Divide the 5,000 halos into ten equal-width bins in $\log_{10}(M_{500}/M_{\odot})$. For each bin, calculate the mean optical depth $\langle \tau \rangle$ using the optimal pairwise estimator. Perform a linear regression in log-log space to extract the slope and normalization. Compare the recovered slope against the theoretical $M^{2/3}$ scaling, using the analytical beam correction derived in Step 1 to isolate the physical mass dependence.
+
+5. **Statistical Robustness via Jackknife Resampling**: Increase the statistical rigor of the error estimation by implementing a Jackknife resampling procedure with 200 subregions. This will provide a well-conditioned covariance matrix for the pairwise kSZ signal, ensuring that the error bars on the $\tau-M$ scaling relation are robust and account for the non-trivial spatial correlations between halo pairs.
+
+6. **Sensitivity and SNR Optimization**: Quantify the SNR improvement achieved by the inverse-variance weighting scheme compared to the unweighted estimator. Explicitly calculate the variance of the estimator as a function of the number of halos and the noise floor. Compare the SNR obtained using true velocities versus reconstructed velocities to determine the "noise penalty" introduced by the velocity field uncertainty.
+
+7. **Null Tests and Systematic Validation**: Conduct a null test by shuffling the peculiar velocities $v_{r,i}$ across the halo catalog while keeping the positions fixed. Re-calculate the pairwise estimator to confirm that the recovered signal is physically associated with the peculiar velocity field and not a result of residual CMB or noise correlations.
+
+8. **Qualitative Validation via Stacked Cutouts**: Apply a matched filter to the observed map to suppress the primary CMB and noise. Extract cutouts centered on each halo and stack them within each mass bin. Use these stacks solely for qualitative validation of the signal presence, ensuring that the visual signal is consistent with the quantitative results derived from the pairwise estimator.
+
+Previous research plan:
+1. **Data Preparation and Baseline Validation**: Load the observed map, halo catalog, and ground-truth maps. Convert pixel indices to physical coordinates. Compute the pairwise kSZ estimator on the `ksz_map_truth.npy` to establish a "gold standard" baseline for $\tau$ recovery, ensuring the implementation correctly incorporates the $T_{CMB} = 2.7255$ K factor and the line-of-sight velocity differences.
+
+2. **Matched Filter Construction**: Construct a matched filter $\Psi(\ell) = \frac{B(\ell)}{C_\ell^{CMB} + C_\ell^{noise}}$ in Fourier space, where $B(\ell)$ is the Gaussian beam profile. This filter will be used to suppress CMB and noise for visualization and stacking purposes, ensuring the filter is consistent with the 1.4 arcmin beam FWHM.
+
+3. **Pairwise kSZ Estimator Implementation**: Implement the pairwise estimator on the raw observed map to maintain statistical unbiasedness. Calculate the temperature difference $\Delta T_{ij} = T_{obs, i} - T_{obs, j}$ and the velocity difference $\Delta v_{ij} = v_{r, i} - v_{r, j}$ for all pairs. Compute the estimator $\hat{\tau}(r)$ in radial bins (e.g., 10 bins from 0 to 50 Mpc/h) to capture the characteristic shape of the pairwise velocity correlation.
+
+4. **Mass Binning and Scaling Relation**: Divide the 5,000 halos into ten equal-width bins based on $\log_{10}(M_{500}/M_{\odot})$. For each bin, calculate the mean optical depth $\langle \tau \rangle$ using the pairwise estimator. Perform a linear regression in log-log space to extract the slope and normalization, comparing the recovered $\tau$ against the theoretical $M^{2/3}$ scaling, accounting for the log-uniform mass distribution within bins.
+
+5. **Stacking and Filtered Visualization**: Apply the matched filter to the raw map to generate a filtered map. Extract cutouts centered on each halo and stack them within each mass bin. This step is strictly for visualization and SNR improvement; ensure this is distinguished from the primary pairwise measurement performed on the raw map.
+
+6. **Statistical Uncertainty Estimation**: Implement Jackknife resampling of the halo catalog to estimate the covariance matrix of the pairwise kSZ signal. This is essential for providing robust error bars on the $\tau-M$ scaling relation and accounting for the non-trivial correlations between halo pairs.
+
+7. **Sensitivity and SNR Analysis**: Quantify the SNR as a function of the number of halos. Explicitly account for the fact that the variance of the estimator is dominated by the CMB power spectrum at the scales of interest, justifying the $\sqrt{N_{halos}}$ scaling. Compare the SNR of the observed map against the "gold standard" truth map to quantify the noise penalty.
+
+8. **Robustness and Null Tests**: Conduct a null test by shuffling the peculiar velocities $v_{r,i}$ across the halo catalog and re-calculating the pairwise estimator. This confirms that the recovered signal is physically associated with the peculiar velocity field and not a result of residual CMB or noise correlations.
+
+Feedback on previous research plan:
+The current analysis successfully demonstrates a statistical detection of the kSZ signal, but the interpretation of the $\tau-M$ scaling relation is currently compromised by methodological oversights.
+
+**1. Critical Weakness: Beam Dilution and Scaling Bias**
+You identified that the recovered slope ($0.4679$) deviates from the theoretical $0.6667$ due to "mass-dependent beam dilution." This is an oversimplification. Since the kSZ signal is treated as a point source, the beam convolution is identical for all halos regardless of mass. The dilution factor is constant across the mass range, not mass-dependent. The observed shallow slope is likely an artifact of the **pairwise estimator's sensitivity to the velocity field correlation at different scales** or a bias in the mass-binning process. You must decouple the beam-convolution effect from the physical scaling. 
+*Action:* Re-calculate the expected signal by convolving the theoretical $\tau(M)$ model with the beam *before* performing the regression. If the slope remains shallow, investigate whether the pairwise estimator is picking up mass-dependent selection effects or velocity-field biases.
+
+**2. Methodological Redundancy and Inconsistency**
+You are using two different approaches—the pairwise estimator (on raw maps) and matched-filter stacking (on filtered maps)—to extract the same physical parameter ($\tau$). 
+*Critique:* The pairwise estimator is the robust, unbiased standard. The matched-filter stacking is prone to bias from the filter's transfer function and is primarily for visualization. 
+*Action:* Stop using the filtered stack to "measure" $\tau$. Use the filtered stack only for qualitative validation. Rely exclusively on the pairwise estimator for the scaling relation. Ensure the pairwise estimator is corrected for the known beam profile analytically rather than relying on empirical fits that mask the underlying physics.
+
+**3. Missed Opportunity: Velocity Reconstruction**
+The plan mentions velocity reconstruction but the results do not utilize it. Since you have the "ground truth" velocities, you are currently using them to compute the estimator. 
+*Action:* To move toward a realistic cosmological application, perform a "blind" test: reconstruct the line-of-sight velocity field using the halo density field (e.g., via linear theory/Wiener filter) and compare the $\tau$ recovery using these *reconstructed* velocities versus the *true* velocities. This quantifies the systematic error introduced by our inability to observe peculiar velocities directly.
+
+**4. Statistical Robustness**
+The Jackknife resampling is appropriate, but 25 subregions for 5,000 halos is too coarse. 
+*Action:* Increase the number of Jackknife samples (e.g., 100-200) to ensure the covariance matrix is well-conditioned and the error bars on the scaling relation are not underestimated.
+
+**5. Future Iteration Focus**
+The current SNR of 3.78 is low. Instead of simply suggesting "more data," focus the next iteration on **optimal weighting**. The current pairwise estimator treats all pairs equally. Weighting pairs by their mass (e.g., $M_i \times M_j$) or by the inverse variance of the noise at their specific locations will significantly improve the SNR without requiring a larger catalog.
+
+
+Respond in this format:
+
+\\begin{SUGGESTIONS}
+<SUGGESTIONS>
+\\end{SUGGESTIONS}
+
+In <SUGGESTIONS> put the suggestions to improve the plan.
+
+###### PROMPT ENDS ########
+
+\begin{SUGGESTIONS}
+The updated plan is well-structured and addresses the previous feedback effectively. I have only a few minor suggestions to further refine the methodology:
+
+1. **Clarify the Wiener Filter for CMB Removal:** In your idea description, you mention subtracting a "Wiener-filtered estimate of the primary CMB." Ensure that in Step 2, you explicitly define how this filter is constructed (e.g., using the known CMB power spectrum and the noise properties of the map). Since you have the ground-truth CMB map, you should also perform a sensitivity test: compare the $\tau$ recovery using the *true* CMB map for subtraction versus the *Wiener-filtered* estimate to quantify the "residual CMB noise" penalty.
+
+2. **Refine the Velocity Reconstruction (Step 3):** Linear theory reconstruction (e.g., the standard Kaiser formula or Wiener-filtered density field) is sensitive to the assumed cosmological parameters. Since this is a synthetic dataset, ensure the reconstruction uses the same cosmology that generated the halo catalog to avoid introducing unnecessary bias. If the reconstruction is purely based on the halo density field, explicitly state that you are assuming a linear bias model for the halos.
+
+3. **Weighting Scheme Consistency:** In Step 2, you define the weight $w_{ij} = \frac{1}{\sigma_{noise}^2 + \sigma_{CMB}^2(\ell_{ij})}$. Note that the CMB variance $\sigma_{CMB}^2$ is scale-dependent (it is the power spectrum $C_\ell$). Ensure that your implementation correctly maps the angular separation $r_{ij}$ to the multipole $\ell \approx \pi / \theta_{ij}$ to calculate the appropriate variance for each pair.
+
+4. **Mass-Binning Bias:** In Step 4, you mention "ten equal-width bins in $\log_{10}(M)$." Given the log-uniform distribution of your catalog, this is a good choice. However, ensure that you account for the fact that the pairwise estimator relies on pairs of halos. If a bin has significantly fewer pairs than others, the variance will be higher. Consider using "equal-count" bins (where each bin contains the same number of halos) if the equal-width bins result in highly variable SNR across the mass range.
+
+The plan is otherwise comprehensive and ready for implementation.
+\end{SUGGESTIONS}
+
